@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+        with:
+          path: 'www2'
+
+      - name: Build Docker Image
+        run: docker build . -t www2
+
+      - name: Remove exist container
+        run: docker rm -f www2
+
+      - name: Run Docker Container
+        run: docker run -v /home/www1:/usr/local/apache2/htdocs -p 8088:80 --name www2 --restart always -d www2 
